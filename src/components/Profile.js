@@ -10,6 +10,7 @@ export class Profile extends Component {
                     <>
                     <h1>{this.props.auth0.user.name}</h1>
                     <img src={this.props.auth0.user.picture} alt={this.props.auth0.user.name}/>
+                    <p >{this.props.auth0.user.email}</p>
                     </>
 
                 }
