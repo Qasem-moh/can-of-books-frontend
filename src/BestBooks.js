@@ -2,8 +2,35 @@ import React from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Jumbotron from 'react-bootstrap/Jumbotron';
 import './BestBooks.css';
+import axios from 'axios';
+import {withAuth0} from '@auth0/auth0-react';
 
 class MyFavoriteBooks extends React.Component {
+
+  
+  componentDidMount = () => {
+    if(this.props.auth0.isAuthenticated) {
+      this.props.auth0.getIdTokenClaims()
+      .then(res => {
+        const jwt = res.__raw;
+        const config = {
+          headers: {"Authorization" : `Bearer ${jwt}`},
+          method: 'get',
+          baseURL: process.env.REACT_APP_SERVER_URL,
+          url: '/authorize'
+        }
+        axios(config)
+          .then(axiosResults => console.log(axiosResults.data))
+          .catch(err => console.error(err));
+      })
+      .catch(err => console.error(err));
+      let SERVER_URL=process.env.REACT_APP_SERVER_URL
+      let url =`${SERVER_URL}/books?email=${this.props.auth0.user.email}`
+      let DataBooks=axios.get(url)
+      console.log(DataBooks)
+    }
+    
+  }
   render() {
     return(
       <Jumbotron>
@@ -16,4 +43,4 @@ class MyFavoriteBooks extends React.Component {
   }
 }
 
-export default MyFavoriteBooks;
+export default withAuth0(MyFavoriteBooks);
