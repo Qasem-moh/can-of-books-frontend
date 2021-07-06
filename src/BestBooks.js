@@ -4,6 +4,7 @@ import Jumbotron from "react-bootstrap/Jumbotron";
 import "./BestBooks.css";
 import axios from "axios";
 import { withAuth0 } from "@auth0/auth0-react";
+import { Card } from "react-bootstrap";
 
 class MyFavoriteBooks extends React.Component {
   constructor(props) {
@@ -12,13 +13,17 @@ class MyFavoriteBooks extends React.Component {
       listBook: [],
     };
   }
-  componentDidMount = () => {
+  componentDidMount = async () => {
     let SERVER_URL = process.env.REACT_APP_SERVER_URL;
+    
+    
+    
     let url = `${SERVER_URL}/books?email=${this.props.auth0.user.email}`;
-    axios.get(url).then((response) => {
-      this.setState({
-        listBook: response.data,
-      });
+    const axiosData = await axios.get(url);
+
+    console.log(axiosData);
+    this.setState({
+      listBook: axiosData.data.books,
     });
   };
 
@@ -27,12 +32,18 @@ class MyFavoriteBooks extends React.Component {
       <Jumbotron>
         <h1>My Favorite Books</h1>
         <p>This is a collection of my favorite books</p>
+
         {this.state.listBook.map((item) => {
           return (
             <>
-              <p>{item.nameBook}</p>
-              <p>{item.bookDescription}</p>
-              <img src={item.bookImg} alt={item.nameBook} />
+              <Card style={{ width: "18rem" }}>
+                <Card.Img variant="top" src={item.bookImg}/>
+                <Card.Body>
+                  <Card.Title>{item.nameBook}</Card.Title>
+                  <Card.Text>{item.bookDescription}</Card.Text>
+                </Card.Body>
+              </Card>
+              <br />
             </>
           );
         })}
