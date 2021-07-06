@@ -14,7 +14,7 @@ import Login from './Login';
 
 class App extends Component {
   render() {
-    // console.log(this.props.auth0)
+    console.log(this.props.auth0)
     return (
 
         <>
